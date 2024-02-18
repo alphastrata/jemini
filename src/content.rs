@@ -1,4 +1,9 @@
+//! For content we SEND to Gemini
+
+use reqwest::Body;
 use serde::{Deserialize, Serialize};
+
+use crate::images::ImageData;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct Content {
@@ -12,22 +17,37 @@ pub struct Content {
     pub image_data: Option<ImageData>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct ImageData {
-    pub mime_type: String, // Image MIME type (e.g., "image/jpeg")
-    pub data: String,      // Base64-encoded image data
-}
-
 impl Content {
-    pub fn new_text_only(prompt: &str) -> Self {
-        Self {
-            text: prompt.into(),
-            ..Default::default()
-        }
+    pub fn new_text_only(prompt: &str) -> Body {
+        (format!(
+            r#"{{"contents": [{{"parts": [{{"text": "{}"}}]}}]}}"#,
+            prompt
+        ))
+        .into()
     }
 
-    pub fn new_text_with_image(prompt: &str, image_data: ImageData) -> Self {
-        todo!()
+    pub fn new_text_with_image(prompt: &str, image_data: ImageData) -> Body {
+        format!(
+            r#"{{
+                "contents": [
+                    {{
+                        "parts": [
+                            {{
+                                "text": "{}"
+                            }},
+                            {{
+                                "inline_data": {{
+                                    "mime_type": "{}",
+                                    "data": "{}"
+                                }}
+                            }}
+                        ]
+                    }}
+                ]
+            }}"#,
+            prompt, image_data.mime_type, image_data.data
+        )
+        .into()
     }
 
     // Consider feasibility/ethical implications of image_only
@@ -37,7 +57,7 @@ impl Content {
         todo!()
     }
 
-    pub fn new_chat(role: &str, message: &str, img_data: Option<ImageData>) {
+    pub fn new_chat(role: &str, message: &str, img_data: Option<ImageData>) -> Body {
         todo!()
     }
 }

@@ -19,4 +19,7 @@ pub enum GeminiError {
 
     #[error(transparent)]
     VarError(#[from] std::env::VarError),
+
+    #[error("StatusCode:{0}")]
+    StatusCode(reqwest::StatusCode),
 }

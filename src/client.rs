@@ -2,7 +2,7 @@ use reqwest::Client;
 use serde_json::{json, Value};
 use url::Url;
 
-use crate::{config::ApiKey, content::Content, errors::GeminiError};
+use crate::{config::ApiKey, content::Content, errors::GeminiError, images::ImageData};
 
 const VERSION: &str = "v1beta";
 
@@ -40,15 +40,15 @@ impl JeminiClient {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
 
-        let contents = format!(
-            r#"{{"contents": [{{"parts": [{{"text": "{}"}}]}}]}}"#,
-            prompt
-        );
-
+        let contents = Content::new_text_only(prompt);
         self.dispatch(url, contents).await
     }
 
-    async fn dispatch(&self, mut url: Url, contents: String) -> Result<Value, GeminiError> {
+    async fn dispatch<B: Into<reqwest::Body>>(
+        &self,
+        mut url: Url,
+        contents: B,
+    ) -> Result<Value, GeminiError> {
         url.query_pairs_mut().append_pair("key", self.api_key());
 
         self.client
@@ -61,18 +61,43 @@ impl JeminiClient {
             .await
             .map_err(GeminiError::from)
     }
+    /// Implements https://ai.google.dev/tutorials/rest_quickstart?hl=en#text-and-image_input
+    pub async fn text_and_image(
+        &self,
+        prompt: &str,
+        image_data: ImageData,
+    ) -> Result<Value, GeminiError> {
+        let url = self
+            .base_url
+            //TODO: const
+            .join("models/gemini-pro-vision:generateContent")?;
+        let contents = Content::new_text_with_image(prompt, image_data);
+
+        self.dispatch(url, contents).await
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tokio::test;
 
     #[tokio::test]
-    async fn test_text_only() {
+    async fn text_only() {
         let client = JeminiClient::new().unwrap();
         let response = client
             .text_only("What is the meaning of life?")
+            .await
+            .unwrap();
+
+        println!("{:#?}", response);
+    }
+
+    #[tokio::test]
+    async fn image() {
+        let client = JeminiClient::new().unwrap();
+        let image_data = ImageData::from_path("test-img.png").unwrap();
+        let response = client
+            .text_and_image("Tell me about this image?", image_data)
             .await
             .unwrap();
 

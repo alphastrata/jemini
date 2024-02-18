@@ -2,7 +2,7 @@
 
 Jemini is a Rust library that provides a simple and intuitive interface for interacting with the Google Gemini REST API.
 
-It exists because I coudln't help but notice that there's no Rust option in their docs... shame on you Google.
+It exists because I couldn't help but notice that there's no Rust option in their docs... shame on you Google.
 
 ## Goals:
 
