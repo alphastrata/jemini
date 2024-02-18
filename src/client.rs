@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use reqwest::Client;
 use url::Url;
+use uuid::Uuid;
 
 use crate::{
     config::ApiKey,
@@ -21,6 +24,7 @@ pub struct JeminiClient {
     chat_histories: HashMap{uuid,Vec<String>}
 
      */
+    active_chats: HashMap<Uuid, Chat>,
 }
 
 impl JeminiClient {
@@ -32,6 +36,7 @@ impl JeminiClient {
                 "https://generativelanguage.googleapis.com/{VERSION}/"
             ))?,
             api_key: ApiKey::from_env()?,
+            active_chats: HashMap::new(),
         })
     }
 
@@ -145,6 +150,6 @@ mod tests {
             .await
             .unwrap();
 
-        println!("{:#?}", response);
+        println!("{:#?}", chat);
     }
 }

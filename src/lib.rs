@@ -9,6 +9,6 @@ mod types;
 
 pub use chat::*;
 pub use client::JeminiClient;
-pub use content::*;
+
 pub use errors::GeminiError;
-pub use response_utils::*;
+

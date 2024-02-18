@@ -21,7 +21,7 @@ impl GeminiResponse {
 mod tests {
     use crate::JeminiClient;
 
-    use super::*;
+    
 
     #[tokio::test]
     async fn into_gemini_response() {

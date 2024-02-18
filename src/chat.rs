@@ -1,11 +1,9 @@
-use reqwest::Body;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
 use crate::{
-    types::{ChatMsg, Part, Role},
+    types::{Part, Role},
     GeminiError,
 };
 
@@ -40,6 +38,6 @@ impl Chat {
     }
 
     pub(crate) fn append(&mut self, resp: crate::types::GeminiResponse) {
-        self.role_part_pairings = resp.role_part_pairings().into_iter().collect()
+        self.role_part_pairings = resp.role_part_pairings().collect()
     }
 }
