@@ -51,9 +51,16 @@ impl ChatMsg {
                 url: None,
             }],
             role: Role::User,
-        })?
-        .into();
+        })?;
 
-        Ok((chat, b))
+        let b = format!(
+            r#"{{
+                "contents": [
+                    {b}
+                    ]
+            }}"#,
+        );
+
+        Ok((chat, b.into()))
     }
 }
