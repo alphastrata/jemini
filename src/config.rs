@@ -11,7 +11,7 @@ impl ApiKey {
         dotenv().ok();
 
         let key = ApiKey {
-            inner: std::env::var("GEIMIN_API_KEY")?.to_string(),
+            inner: std::env::var("GEMINI_API_KEY")?.to_string(),
         };
 
         Ok(key)

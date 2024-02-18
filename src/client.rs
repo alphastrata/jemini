@@ -13,13 +13,13 @@ pub struct JeminiClient {
 }
 
 impl JeminiClient {
-    pub async fn new(api_key: ApiKey) -> Result<Self, GeminiError> {
+    pub fn new() -> Result<Self, GeminiError> {
         Ok(Self {
             client: Client::new(),
             base_url: Url::parse(&format!(
                 "https://generativelanguage.googleapis.com/{VERSION}/"
             ))?,
-            api_key,
+            api_key: ApiKey::from_env()?,
         })
     }
 
@@ -30,15 +30,20 @@ impl JeminiClient {
 
 impl JeminiClient {
     pub async fn text_only(&self, prompt: &str) -> Result<Value, GeminiError> {
-        let url = self.base_url.join("models/gemini-pro:generateContent")?;
+        //TODO: let's put all the potential urls we can hit in the client as privates?
+        let mut url = self.base_url.join("models/gemini-pro:generateContent")?;
 
-        let contents = Content::new_text_only(prompt);
+        url.query_pairs_mut().append_pair("key", self.api_key());
+
+        let contents = format!(
+            r#"{{"contents": [{{"parts": [{{"text": "{}"}}]}}]}}"#,
+            prompt
+        );
 
         self.client
             .post(url)
             .header("Content-Type", "application/json")
-            .bearer_auth(self.api_key())
-            .json(&contents)
+            .body(contents)
             .send()
             .await?
             .json()
@@ -51,4 +56,18 @@ impl JeminiClient {
 mod tests {
     use super::*;
     use tokio::test;
+
+    #[tokio::test]
+    async fn test_text_only() {
+        // Mock or set up JeminiClient
+        let client = JeminiClient::new().unwrap();
+
+        // Define prompt
+        let prompt = "What is the meaning of life?";
+
+        // Make the request and check response
+        let response = client.text_only(&prompt).await.unwrap();
+
+        println!("{:#?}", response);
+    }
 }
