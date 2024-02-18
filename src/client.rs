@@ -10,6 +10,12 @@ pub struct JeminiClient {
     client: Client,
     base_url: Url,
     api_key: ApiKey,
+    /*TODO:
+
+    available models
+    chat_histories: HashMap{uuid,Vec<String>}
+
+     */
 }
 
 impl JeminiClient {
@@ -17,6 +23,7 @@ impl JeminiClient {
         Ok(Self {
             client: Client::new(),
             base_url: Url::parse(&format!(
+                //TODO: Const
                 "https://generativelanguage.googleapis.com/{VERSION}/"
             ))?,
             api_key: ApiKey::from_env()?,
@@ -30,15 +37,19 @@ impl JeminiClient {
 
 impl JeminiClient {
     pub async fn text_only(&self, prompt: &str) -> Result<Value, GeminiError> {
-        //TODO: let's put all the potential urls we can hit in the client as privates?
-        let mut url = self.base_url.join("models/gemini-pro:generateContent")?;
-
-        url.query_pairs_mut().append_pair("key", self.api_key());
+        //TODO: const these model options??
+        let url = self.base_url.join("models/gemini-pro:generateContent")?;
 
         let contents = format!(
             r#"{{"contents": [{{"parts": [{{"text": "{}"}}]}}]}}"#,
             prompt
         );
+
+        self.dispatch(url, contents).await
+    }
+
+    async fn dispatch(&self, mut url: Url, contents: String) -> Result<Value, GeminiError> {
+        url.query_pairs_mut().append_pair("key", self.api_key());
 
         self.client
             .post(url)
@@ -59,14 +70,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_text_only() {
-        // Mock or set up JeminiClient
         let client = JeminiClient::new().unwrap();
-
-        // Define prompt
-        let prompt = "What is the meaning of life?";
-
-        // Make the request and check response
-        let response = client.text_only(&prompt).await.unwrap();
+        let response = client
+            .text_only("What is the meaning of life?")
+            .await
+            .unwrap();
 
         println!("{:#?}", response);
     }
