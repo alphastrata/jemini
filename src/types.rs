@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Default)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub enum Role {
     Model,
     #[default]
@@ -29,8 +29,8 @@ pub struct Candidate {
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct Content {
     pub parts: Vec<Part>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
+    #[serde(default)]
+    pub role: Role,
 }
 
 #[derive(Debug, Deserialize, Serialize, Default)]

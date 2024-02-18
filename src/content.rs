@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::{images::ImageData, types::Role};
 
 #[derive(Debug, Deserialize, Serialize, Default)]
-pub struct Content {
+pub struct SimpleContent {
     // Optional user role for chat-like interactions
     pub role: Role,
 
@@ -19,7 +19,7 @@ pub struct Content {
     pub parts: Vec<String>,
 }
 
-impl Content {
+impl SimpleContent {
     pub fn new_text_only(prompt: &str) -> Body {
         (format!(
             r#"{{"contents": [{{"parts": [{{"text": "{}"}}]}}]}}"#,

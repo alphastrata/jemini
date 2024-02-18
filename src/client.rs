@@ -2,7 +2,14 @@ use reqwest::Client;
 use serde_json::{json, Value};
 use url::Url;
 
-use crate::{config::ApiKey, content::Content, errors::GeminiError, images::ImageData};
+use crate::{
+    config::ApiKey,
+    content::SimpleContent,
+    errors::GeminiError,
+    images::ImageData,
+    types::{Content, GeminiResponse},
+    Chat,
+};
 
 const VERSION: &str = "v1beta";
 
@@ -36,11 +43,11 @@ impl JeminiClient {
 }
 
 impl JeminiClient {
-    pub async fn text_only(&self, prompt: &str) -> Result<Value, GeminiError> {
+    pub async fn text_only(&self, prompt: &str) -> Result<GeminiResponse, GeminiError> {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
 
-        let contents = Content::new_text_only(prompt);
+        let contents = SimpleContent::new_text_only(prompt);
         self.dispatch(url, contents).await
     }
 
@@ -48,7 +55,7 @@ impl JeminiClient {
         &self,
         mut url: Url,
         contents: B,
-    ) -> Result<Value, GeminiError> {
+    ) -> Result<GeminiResponse, GeminiError> {
         url.query_pairs_mut().append_pair("key", self.api_key());
 
         self.client
@@ -57,7 +64,7 @@ impl JeminiClient {
             .body(contents)
             .send()
             .await?
-            .json()
+            .json::<GeminiResponse>()
             .await
             .map_err(GeminiError::from)
     }
@@ -66,14 +73,25 @@ impl JeminiClient {
         &self,
         prompt: &str,
         image_data: ImageData,
-    ) -> Result<Value, GeminiError> {
+    ) -> Result<GeminiResponse, GeminiError> {
         let url = self
             .base_url
             //TODO: const
             .join("models/gemini-pro-vision:generateContent")?;
-        let contents = Content::new_text_with_image(prompt, image_data);
+        let contents = SimpleContent::new_text_with_image(prompt, image_data);
 
         self.dispatch(url, contents).await
+    }
+
+    pub async fn new_chat(&self, prompt: &str) -> Result<Chat, GeminiError> {
+        //TODO: const these model options??
+        let url = self.base_url.join("models/gemini-pro:generateContent")?;
+
+        let (mut chat, contents) = Content::new_chat(prompt)?;
+        let resp = self.dispatch(url, contents).await?;
+
+        chat.append(resp);
+        Ok(chat)
     }
 }
 
@@ -98,6 +116,17 @@ mod tests {
         let image_data = ImageData::from_path("test-img.png").unwrap();
         let response = client
             .text_and_image("Tell me about this image?", image_data)
+            .await
+            .unwrap();
+
+        println!("{:#?}", response);
+    }
+
+    #[tokio::test]
+    async fn chat() {
+        let client = JeminiClient::new().unwrap();
+        let response = client
+            .new_chat("Write a password generation function in golang.")
             .await
             .unwrap();
 

@@ -5,8 +5,8 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
 use crate::{
-    types::{Part, Role},
-    Content, GeminiError,
+    types::{Content, Part, Role},
+    GeminiError,
 };
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -16,8 +16,22 @@ pub struct Chat {
     pub role_part_pairings: Vec<(Role, Part)>,
 }
 
+impl Default for Chat {
+    fn default() -> Self {
+        Chat {
+            uuid: Uuid::new_v4(),
+            start_time: SystemTime::now().duration_since(UNIX_EPOCH).expect(
+            "The only way this can fail is if your system for some reason cannot compute a duration since UNIX_EPOCH 
+            via SystemTime::now(). If this happens, file a bug report on `std::time::SystemTime::new()` 
+            and be sure to mention your OS."
+        ),
+            role_part_pairings: vec![],
+        }
+    }
+}
+
 impl Chat {
-    pub fn new(roles: Vec<String>, contents: Vec<Content>) -> Result<Self, GeminiError> {
+    pub fn new() -> Result<Self, GeminiError> {
         Ok(Chat {
             uuid: Uuid::new_v4(),
             start_time: SystemTime::now().duration_since(UNIX_EPOCH)?,
@@ -25,27 +39,22 @@ impl Chat {
         })
     }
 
-    fn new_chat(prompt: &str) -> Body {
-        let mut contents = Content::default();
-        contents.role = Role::User;
-        contents.parts.push(prompt.to_string());
+    pub(crate) fn append(&mut self, resp: crate::types::GeminiResponse) {
+        todo!()
+    }
+}
+impl Content {
+    pub fn new_chat(prompt: &str) -> Result<(Chat, Body), GeminiError> {
+        let chat = Chat::default();
+        let b = serde_json::to_string(&Content {
+            parts: vec![Part {
+                text: prompt.to_string(),
+                url: None,
+            }],
+            role: Role::User,
+        })?
+        .into();
 
-        let chat = Chat::new(vec!["user".to_string()], vec![contents]).unwrap();
-        let payload = json!({
-            "uuid": chat.uuid,
-            "start_time": chat.start_time,
-            "contents": chat.contents.into_iter().map(|content| {
-                json!({
-                    "role": content.role.unwrap_or_default(),
-                    "parts": content.parts.into_iter().map(|part| {
-                        json!({
-                            "text": prompt,
-                        })
-                    }).collect::<Vec<_>>()
-                })
-            }).collect::<Vec<_>>()
-        });
-
-        payload.to_string().into()
+        Ok((chat, b))
     }
 }
