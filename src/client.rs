@@ -1,13 +1,11 @@
 use reqwest::Client;
-use serde_json::{json, Value};
 use url::Url;
 
 use crate::{
     config::ApiKey,
-    content::SimpleContent,
     errors::GeminiError,
     images::ImageData,
-    types::{Content, GeminiResponse},
+    types::{ChatMsg, GeminiResponse, SimpleTextMsg},
     Chat,
 };
 
@@ -47,7 +45,7 @@ impl JeminiClient {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
 
-        let contents = SimpleContent::new_text_only(prompt);
+        let contents = SimpleTextMsg::new_text_only(prompt);
         self.dispatch(url, contents).await
     }
 
@@ -78,7 +76,7 @@ impl JeminiClient {
             .base_url
             //TODO: const
             .join("models/gemini-pro-vision:generateContent")?;
-        let contents = SimpleContent::new_text_with_image(prompt, image_data);
+        let contents = SimpleTextMsg::new_text_with_image(prompt, image_data);
 
         self.dispatch(url, contents).await
     }
@@ -87,9 +85,12 @@ impl JeminiClient {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
 
-        let (mut chat, contents) = Content::new_chat(prompt)?;
+        let (mut chat, contents) = ChatMsg::new(prompt)?;
+        println!("{:#?}", &contents);
+
         let resp = self.dispatch(url, contents).await?;
 
+        println!("{:#?}", resp);
         chat.append(resp);
         Ok(chat)
     }

@@ -5,7 +5,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
 use crate::{
-    types::{Content, Part, Role},
+    types::{ChatMsg, Part, Role},
     GeminiError,
 };
 
@@ -40,21 +40,6 @@ impl Chat {
     }
 
     pub(crate) fn append(&mut self, resp: crate::types::GeminiResponse) {
-        todo!()
-    }
-}
-impl Content {
-    pub fn new_chat(prompt: &str) -> Result<(Chat, Body), GeminiError> {
-        let chat = Chat::default();
-        let b = serde_json::to_string(&Content {
-            parts: vec![Part {
-                text: prompt.to_string(),
-                url: None,
-            }],
-            role: Role::User,
-        })?
-        .into();
-
-        Ok((chat, b))
+        self.role_part_pairings = resp.role_part_pairings().into_iter().collect()
     }
 }

@@ -7,6 +7,14 @@ impl GeminiResponse {
             .iter()
             .flat_map(|can| can.content.parts.iter().map(|pt| pt.text.as_str()))
     }
+
+    pub fn role_part_pairings(self) -> impl Iterator<Item = (Role, Part)> {
+        self.candidates.into_iter().map(|can| {
+            let role = can.content.role;
+            let part = can.content.parts.last();
+            (role, part.unwrap().to_owned()) //FIXME:
+        })
+    }
 }
 
 #[cfg(test)]
@@ -21,18 +29,10 @@ mod tests {
         let client = JeminiClient::new().expect("Failed to create JeminiClient");
 
         // Perform a text_only call
-        let response = client
+        let gemini_response = client
             .text_only("What is the meaning of life?")
             .await
             .expect("Failed to get response from text_only call");
-
-        let gemini_response = match serde_json::from_value::<GeminiResponse>(response.clone()) {
-            Ok(gemini_response) => gemini_response,
-            Err(err) => panic!(
-                "Failed to parse response into GeminiResponse: {:?}\n{:#?}",
-                err, response
-            ),
-        };
 
         gemini_response
             .iter_responses()

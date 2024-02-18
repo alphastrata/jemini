@@ -1,25 +1,14 @@
 //! For content we SEND to Gemini
 
 use reqwest::Body;
-use serde::{Deserialize, Serialize};
 
-use crate::{images::ImageData, types::Role};
+use crate::{
+    images::ImageData,
+    types::{ChatMsg, Part, Role, SimpleTextMsg},
+    Chat, GeminiError,
+};
 
-#[derive(Debug, Deserialize, Serialize, Default)]
-pub struct SimpleContent {
-    // Optional user role for chat-like interactions
-    pub role: Role,
-
-    // Required text prompt for all content types
-    pub text: String,
-
-    // Optional image data for image-related content
-    pub image_data: Option<ImageData>,
-
-    pub parts: Vec<String>,
-}
-
-impl SimpleContent {
+impl SimpleTextMsg {
     pub fn new_text_only(prompt: &str) -> Body {
         (format!(
             r#"{{"contents": [{{"parts": [{{"text": "{}"}}]}}]}}"#,
@@ -50,5 +39,21 @@ impl SimpleContent {
             prompt, image_data.mime_type, image_data.data
         )
         .into()
+    }
+}
+
+impl ChatMsg {
+    pub fn new(prompt: &str) -> Result<(Chat, Body), GeminiError> {
+        let chat = Chat::default();
+        let b = serde_json::to_string(&ChatMsg {
+            parts: vec![Part {
+                text: prompt.to_string(),
+                url: None,
+            }],
+            role: Role::User,
+        })?
+        .into();
+
+        Ok((chat, b))
     }
 }

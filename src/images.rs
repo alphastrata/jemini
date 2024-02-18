@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ImageData {
     pub mime_type: String,     // Image MIME type (e.g., "image/jpeg")
     pub data: String,          // Base64-encoded image data
