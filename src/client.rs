@@ -82,19 +82,15 @@ impl JeminiClient {
     pub async fn new_chat(&self, prompt: &str) -> Result<Chat, GeminiError> {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
-
         let (mut chat, contents) = ChatMsg::new(prompt)?;
-        println!("{:#?}", &contents);
-
         let resp = self.dispatch(url, contents).await?;
 
-        println!("{:#?}", resp);
         chat.append(resp);
         Ok(chat)
     }
 
     //TODO: if we have a Chat -- keep it in the Client.
-    pub async fn reply(&self, chat: &mut Chat, reply: &str) -> Result<(), GeminiError> {
+    pub async fn reply_to(&self, chat: &mut Chat, reply: &str) -> Result<(), GeminiError> {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
 
@@ -144,10 +140,11 @@ mod tests {
 
         println!("{:#?}", chat);
 
-        let response = client
-            .reply(&mut chat, "Write a password generation function in Rust.")
+        client
+            .reply_to(&mut chat, "Write a password generation function in Rust.")
             .await
             .unwrap();
+
         println!("{:#?}", response);
     }
 }

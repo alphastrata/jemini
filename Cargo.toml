@@ -4,7 +4,13 @@ license = "MIT"
 version = "0.1.0"
 edition = "2021"
 publish = true
-description = "A, _hopefully_ Rusty wrapper for the Gemini REST API: https://ai.google.dev/tutorials/rest_quickstart?hl=en"
+description = """
+THIS IS A WIP! (But the simplest functionality there)
+
+A, _hopefully_ Rusty wrapper for the Gemini REST API: https://ai.google.dev/tutorials/rest_quickstart?hl=en
+
+
+"""
 authors = ["jer, <alphastrata@gmail.com>"]
 
 
