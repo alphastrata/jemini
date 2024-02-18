@@ -22,4 +22,7 @@ pub enum GeminiError {
 
     #[error("StatusCode:{0}")]
     StatusCode(reqwest::StatusCode),
+
+    #[error(transparent)]
+    SystemTime(#[from] std::time::SystemTimeError),
 }

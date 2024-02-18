@@ -14,7 +14,6 @@ mod tests {
     use crate::JeminiClient;
 
     use super::*;
-    use tokio::test;
 
     #[tokio::test]
     async fn into_gemini_response() {

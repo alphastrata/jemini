@@ -1,5 +1,12 @@
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Deserialize, Serialize, Default)]
+pub enum Role {
+    Model,
+    #[default]
+    User,
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GeminiResponse {
     #[serde(default)]

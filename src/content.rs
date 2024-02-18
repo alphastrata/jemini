@@ -3,18 +3,20 @@
 use reqwest::Body;
 use serde::{Deserialize, Serialize};
 
-use crate::images::ImageData;
+use crate::{images::ImageData, types::Role};
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct Content {
     // Optional user role for chat-like interactions
-    pub role: Option<String>,
+    pub role: Role,
 
     // Required text prompt for all content types
     pub text: String,
 
     // Optional image data for image-related content
     pub image_data: Option<ImageData>,
+
+    pub parts: Vec<String>,
 }
 
 impl Content {
@@ -48,16 +50,5 @@ impl Content {
             prompt, image_data.mime_type, image_data.data
         )
         .into()
-    }
-
-    // Consider feasibility/ethical implications of image_only
-    pub fn new_image_only(image_data: ImageData) {
-        // ... implement based on potential API support and ethical considerations
-        // Be mindful of ethical considerations and potential limitations.
-        todo!()
-    }
-
-    pub fn new_chat(role: &str, message: &str, img_data: Option<ImageData>) -> Body {
-        todo!()
     }
 }
