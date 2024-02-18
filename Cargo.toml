@@ -4,8 +4,8 @@ license = "MIT"
 version = "0.1.0"
 edition = "2021"
 publish = true
-description = "TBC"
-authors = ["jer"]
+description = "A, _hopefully_ Rusty wrapper for the Gemini REST API: https://ai.google.dev/tutorials/rest_quickstart?hl=en"
+authors = ["jer, <alphastrata@gmail.com>"]
 
 
 [dependencies]
