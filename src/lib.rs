@@ -1,14 +1,14 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+mod chat;
+pub mod client;
+pub(crate) mod config;
+mod content;
+mod errors;
+mod images;
+mod response_utils;
+mod types;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub use chat::*;
+pub use client::JeminiClient;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use errors::GeminiError;
+
