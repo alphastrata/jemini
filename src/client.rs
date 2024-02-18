@@ -35,12 +35,10 @@ impl JeminiClient {
         })
     }
 
-    pub(crate) fn api_key(&self) -> &str {
+    fn api_key(&self) -> &str {
         &self.api_key.inner
     }
-}
 
-impl JeminiClient {
     pub async fn text_only(&self, prompt: &str) -> Result<GeminiResponse, GeminiError> {
         //TODO: const these model options??
         let url = self.base_url.join("models/gemini-pro:generateContent")?;
@@ -94,6 +92,19 @@ impl JeminiClient {
         chat.append(resp);
         Ok(chat)
     }
+
+    //TODO: if we have a Chat -- keep it in the Client.
+    pub async fn reply(&self, chat: &mut Chat, reply: &str) -> Result<(), GeminiError> {
+        //TODO: const these model options??
+        let url = self.base_url.join("models/gemini-pro:generateContent")?;
+
+        let (_, contents) = ChatMsg::new(reply)?;
+        let resp = self.dispatch(url, contents).await?;
+
+        println!("{:#?}", resp);
+        chat.append(resp);
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -126,11 +137,17 @@ mod tests {
     #[tokio::test]
     async fn chat() {
         let client = JeminiClient::new().unwrap();
-        let response = client
-            .new_chat("Write a password generation function in golang.")
+        let mut chat = client
+            .new_chat("Write a password generation function in Golang.")
             .await
             .unwrap();
 
+        println!("{:#?}", chat);
+
+        let response = client
+            .reply(&mut chat, "Write a password generation function in Rust.")
+            .await
+            .unwrap();
         println!("{:#?}", response);
     }
 }
