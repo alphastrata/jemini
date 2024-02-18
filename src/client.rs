@@ -4,6 +4,8 @@ use url::Url;
 
 use crate::{config::ApiKey, content::Content, errors::GeminiError};
 
+const VERSION: &str = "v1beta";
+
 pub struct JeminiClient {
     client: Client,
     base_url: Url,
@@ -12,16 +14,16 @@ pub struct JeminiClient {
 
 impl JeminiClient {
     pub async fn new(api_key: ApiKey) -> Result<Self, GeminiError> {
-        let base_url = Url::parse("https://generativelanguage.googleapis.com/v1beta/")?;
-        let client = Client::new();
-
         Ok(Self {
-            client,
-            base_url,
+            client: Client::new(),
+            base_url: Url::parse(&format!(
+                "https://generativelanguage.googleapis.com/{VERSION}/"
+            ))?,
             api_key,
         })
     }
-    fn api_key(&self) -> &str {
+
+    pub(crate) fn api_key(&self) -> &str {
         &self.api_key.inner
     }
 }
@@ -32,16 +34,16 @@ impl JeminiClient {
 
         let contents = Content::new_text_only(prompt);
 
-        let response = self
-            .client
+        self.client
             .post(url)
             .header("Content-Type", "application/json")
             .bearer_auth(self.api_key())
-            .body(contents.into())
+            .json(&contents)
             .send()
-            .await?;
-
-        response.json().await?
+            .await?
+            .json()
+            .await
+            .map_err(GeminiError::from)
     }
 }
 

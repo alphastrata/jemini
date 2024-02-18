@@ -16,4 +16,7 @@ pub enum GeminiError {
 
     #[error(transparent)]
     IoError(#[from] std::io::Error),
+
+    #[error(transparent)]
+    VarError(#[from] std::env::VarError),
 }
