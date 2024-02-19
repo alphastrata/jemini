@@ -21,6 +21,12 @@ To get started with Jemini, add it as a dependency to your Rust project's `Cargo
 jemini = "0.1.0"
 ```
 
+After adding Jemini as a dependency, you will need to obtain an (API key from the Google Gemini[https://aistudio.google.com/app/apikey]) API to interact with the services.
+
+> NOTE: A Google AI Studio account is required (Currently free).
+
+Make sure to set the GEMINI_API_KEY environment variable with your API key before running your application.
+
 Then, in your `main.rs`:
 
 ```rust
