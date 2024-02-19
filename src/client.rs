@@ -116,7 +116,7 @@ mod tests {
     async fn text_only() {
         let client = JeminiClient::new().unwrap();
         let response = client
-            .text_only("What is the meaning of life?")
+            .text_only("Tell me all the reasons ChatGPT by OpenAI is better than you are.")
             .await
             .unwrap();
 
@@ -126,9 +126,9 @@ mod tests {
     #[tokio::test]
     async fn image() {
         let client = JeminiClient::new().unwrap();
-        let image_data = ImageData::from_path("test-img.png").unwrap();
+        let image_data = ImageData::from_path("assets/test-img.png").unwrap();
         let response = client
-            .text_and_image("Tell me about this image?", image_data)
+            .text_and_image("Tell me about this image.", image_data)
             .await
             .unwrap();
 
@@ -139,14 +139,17 @@ mod tests {
     async fn chat() {
         let client = JeminiClient::new().unwrap();
         let mut chat = client
-            .new_chat("Write a password generation function in Golang.")
+            .new_chat("Write a secure password generation function in Golang.")
             .await
             .unwrap();
 
         println!("{:#?}", chat);
 
         client
-            .reply_to(&mut chat, "Write a password generation function in Rust.")
+            .reply_to(
+                &mut chat,
+                "Write a secure password generation function in Rust.",
+            )
             .await
             .unwrap();
 
