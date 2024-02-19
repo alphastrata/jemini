@@ -1,4 +1,3 @@
-use dotenv::dotenv;
 use jemini::{Chat, JeminiClient as GeminiClient};
 use poise::serenity_prelude::{self as serenity, UserId};
 use std::env;
@@ -41,7 +40,6 @@ async fn clear(
 }
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    // MTIwOTA1ODg5MTU1NjcyNDc0Ng.Gje6B7.-E8noOyXeXO2UYvq3uBDMKn4i0PQiErDTfePus
     _ = dotenv::dotenv().ok();
     let token: String = env::var("GEMINI_DISCORD_TOKEN")
         .expect("Expected a GEMINI_DISCORD_TOKEN in the environment");
