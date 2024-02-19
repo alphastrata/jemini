@@ -40,4 +40,11 @@ impl Chat {
     pub(crate) fn append(&mut self, resp: crate::types::GeminiResponse) {
         self.role_part_pairings = resp.role_part_pairings().collect()
     }
+
+    pub fn most_recent(&self) -> &str {
+        self.role_part_pairings
+            .last()
+            .map(|(r, p)| p.text.as_str())
+            .unwrap_or_else(|| "ERROR: No Message.")
+    }
 }

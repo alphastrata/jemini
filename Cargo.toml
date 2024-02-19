@@ -1,3 +1,4 @@
+workspace = { members = ["examples/discord-bot"] }
 [package]
 name = "jemini"
 license = "MIT"
@@ -19,6 +20,7 @@ base64 = "0.21.7"
 bytes = "1.5.0"
 dotenv = "0.15.0"
 image = "0.24.8"
+poise = "0.6.1"
 regex = "1.10.3"
 reqwest = { version = "0.11.24", features = ["json"] }
 serde = { version = "1.0.196", features = ["derive"] }
