@@ -18,12 +18,7 @@ pub struct JeminiClient {
     client: Client,
     base_url: Url,
     api_key: ApiKey,
-    /*TODO:
-
-    available models
-    chat_histories: HashMap{uuid,Vec<String>}
-
-     */
+    //TODO:
     active_chats: HashMap<Uuid, Chat>,
 }
 
