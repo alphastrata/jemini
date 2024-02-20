@@ -1,6 +1,8 @@
 | ![Banner  1](./assets/banner.jpg) | ![Banner  2](./assets/banner_2.jpg) | ![Banner  3](./assets/banner_3.jpg) |
 | --------------------------------- | ----------------------------------- | ----------------------------------- |
 
+##### _art by Gemini_
+
 # Jemini
 
 Jemini is a Rust library that provides a simple and intuitive interface for interacting with the Google Gemini REST API.
