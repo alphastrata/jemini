@@ -10,9 +10,13 @@ THIS IS A WIP! (But the simplest functionality there)
 
 A, _hopefully_ Rusty wrapper for the Gemini REST API: https://ai.google.dev/tutorials/rest_quickstart?hl=en
 
-
 """
 authors = ["jer, <alphastrata@gmail.com>"]
+
+
+[[example]]
+name = "discord-bot"
+path = "examples/discord-bot/src/main.rs"
 
 
 [dependencies]

@@ -26,8 +26,8 @@ async fn activate_bot(ctx: Context<'_>) -> Result<(), Error> {
 }
 #[poise::command(slash_command, prefix_command)]
 async fn deactivate_bot(ctx: Context<'_>) -> Result<(), Error> {
-    ACTIVE.store(false, Ordering::SeqCst);
     _ = ctx.reply("ciao!").await;
+    ACTIVE.store(false, Ordering::SeqCst);
     Ok(())
 }
 
