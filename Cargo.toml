@@ -1,0 +1,31 @@
+workspace = { members = ["examples/discord-bot"] }
+[package]
+name = "jemini"
+license = "MIT"
+version = "0.1.0"
+edition = "2021"
+publish = true
+description = """
+THIS IS A WIP! (But the simplest functionality there)
+
+A, _hopefully_ Rusty wrapper for the Gemini REST API: https://ai.google.dev/tutorials/rest_quickstart?hl=en
+
+
+"""
+authors = ["jer, <alphastrata@gmail.com>"]
+
+
+[dependencies]
+base64 = "0.21.7"
+bytes = "1.5.0"
+dotenv = "0.15.0"
+image = "0.24.8"
+poise = "0.6.1"
+regex = "1.10.3"
+reqwest = { version = "0.11.24", features = ["json"] }
+serde = { version = "1.0.196", features = ["derive"] }
+serde_json = "1.0.113"
+thiserror = "1.0.57"
+tokio = { version = "1.36.0", features = ["full"] }
+url = "2.5.0"
+uuid = { version = "1.7.0", features = ["serde", "v4"] }
