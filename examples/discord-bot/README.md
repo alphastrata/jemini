@@ -41,9 +41,42 @@ cargo run --release
 
 ## What can it do?
 
-- `@GeminiBot`: Starts a new chat with the Jemini API, or you can just start typing. Be careful in a server -- should you choose to do that -- as it'll just assume everything is directed at it.
+_not much, it's an example.._
+
+- use `/` slash commands to activate/deactivate the bot.
+- `@GeminiBot` the bot to chat.
 - Uploading a photo with text will be interpreted by the GeminiPro Vision model.
 
-### todos:
+## A TODO list if you wanted this sort of thing.
 
-- `/clear` will wipe chat history.
+> _I'll probs merge any of this if anyone wants to implement it_
+
+1. ~~**Implement Activation and Deactivation Commands**: Create slash commands to activate and deactivate the bot. This will allow users to control the bot's functionality without affecting the codebase.~~
+
+2. ~~**Refactor Event Handling**: Modify the event handler to check the `ACTIVE` state before processing events. This will prevent the bot from responding when it's deactivated.~~
+
+3. **Handle Existing Chats**: Implement functionality to handle existing chats when a user interacts with the bot. This will ensure that the bot can maintain context and provide relevant responses.
+
+4. **Long-Lived Chats and History Management**: Develop a system to manage long-lived chats and their history. This will allow the bot to remember past interactions and provide more coherent responses over time.
+
+5. **Error Handling**: Improve error handling throughout the bot's code to ensure that it can gracefully handle unexpected situations and provide useful feedback to users.
+
+6. **Testing**: Write comprehensive tests for the bot's functionality to ensure that it behaves as expected and to catch any regressions introduced during development.
+
+7. **Documentation**: Update the README and other documentation to reflect the current state of the bot and its features. This will help users understand how to use the bot and what to expect from it.
+
+8. **Performance Optimization**: Review the bot's performance and identify any potential bottlenecks or areas for improvement. This may include optimizing the event handling loop or the way the bot interacts with external services.
+
+9. **Security Review**: Conduct a security review of the bot's code and its interactions with external services to ensure that it is secure and that user data is handled appropriately.
+
+10. **User Interface**: Consider implementing a user interface for the bot, such as a web dashboard or a more interactive chat interface, to improve the user experience.
+
+11. **Logging and Monitoring**: Set up logging and monitoring to track the bot's performance and usage. This will help with debugging and understanding how the bot is being used in practice.
+
+12. **Deployment and Continuous Integration**: Set up a deployment pipeline and continuous integration/continuous deployment (CI/CD) system to automate the process of updating and deploying the bot.
+
+13. **Scalability**: Design the bot with scalability in mind, ensuring that it can handle an increasing number of users and interactions without performance degradation.
+
+14. **Internationalization**: If the bot will be used in multiple regions or languages, consider implementing internationalization to support different languages and locales.
+
+15. **Accessibility**: Ensure that the bot is accessible to users with disabilities by following accessibility best practices and guidelines.
