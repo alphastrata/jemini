@@ -15,7 +15,7 @@ This is a Discord bot example that uses the [Poise crate](https://docs.rs/poise)
 
 ## Setting Up the Jemini API Key
 
-1. Follow the instructions in the [Jemini README](../../README.md) to obtain a Jemini API key.
+1. Follow the instructions in the [Jemini README](../../README.md) to obtain a Gemini/Google AI Studio API key.
 2. Store the API key in a `.env` file at the root of your project:
    > .env file
 
@@ -32,14 +32,18 @@ This is a Discord bot example that uses the [Poise crate](https://docs.rs/poise)
 4. Run the bot:
 
 ```sh
-cargo run
+cargo run --release
 ```
 
 5. Invite the bot to your Discord server using the OAuth2 URL generated in the Discord Developer Portal.
 
 6. Once the bot is running, you can start a chat by mentioning the bot with the command `@GeminiBot`.
 
-## Commands
+## What can it do?
 
-- `@GeminiBot`: Starts a new chat with the Jemini API.
+- `@GeminiBot`: Starts a new chat with the Jemini API, or you can just start typing. Be careful in a server -- should you choose to do that -- as it'll just assume everything is directed at it.
+- Uploading a photo with text will be interpreted by the GeminiPro Vision model.
+
+### todos:
+
 - `/clear` will wipe chat history.
