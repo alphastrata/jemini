@@ -1,5 +1,6 @@
 use image::ImageFormat;
 use jemini::{Chat, ImageData, JeminiClient as GeminiClient};
+use log::{debug, error, info};
 use poise::serenity_prelude::{self as serenity, UserId};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::{collections::HashMap, env, path::PathBuf, sync::Arc};
@@ -44,6 +45,8 @@ async fn clear(ctx: Context<'_>) -> Result<(), Error> {
 }
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    pretty_env_logger::init();
+
     _ = dotenv::dotenv().ok();
     let token: String = env::var("GEMINI_DISCORD_TOKEN")
         .expect("Expected a GEMINI_DISCORD_TOKEN in the environment");
@@ -97,7 +100,7 @@ async fn event_handler<'c>(
 
     match event {
         // serenity::FullEvent::Ready { data_about_bot, .. } => {
-        // println!("Logged in as {:#?}", data_about_bot.user);
+        // debug!("Logged in as {:#?}", data_about_bot.user);
         // }
         serenity::FullEvent::Message { new_message } => {
             //
@@ -108,8 +111,8 @@ async fn event_handler<'c>(
                 // Handle img:
                 if let Some(attachment) = new_message.attachments.first() {
                     if let Ok(content) = attachment.download().await {
-                        println!("filename:{}", attachment.filename);
-                        println!("img_size: {}b", content.len());
+                        debug!("filename:{}", attachment.filename);
+                        debug!("img_size: {}b", content.len());
                         let format = match PathBuf::from(&attachment.filename).extension() {
                             Some(ext) => match ext.to_str() {
                                 Some("jpg") | Some("jpeg") => ImageFormat::Jpeg,
@@ -117,16 +120,16 @@ async fn event_handler<'c>(
                                 Some("gif") => ImageFormat::Gif,
                                 Some("webp") => ImageFormat::WebP,
                                 _ => {
-                                    eprintln!("Unsupported image format");
+                                    error!("Unsupported image format");
                                     return Ok(());
                                 }
                             },
                             None => {
-                                eprintln!("No file extension found");
+                                error!("No file extension found");
                                 return Ok(());
                             }
                         };
-                        println!("{}", format.to_mime_type());
+                        debug!("{}", format.to_mime_type());
                         if let Ok(image_data) = ImageData::from_bytes(content.into(), format) {
                             if let Ok(response) = gemini_client
                                 .text_and_image(&new_message.content, image_data)
@@ -156,7 +159,7 @@ async fn event_handler<'c>(
                 {
                     let timer = std::time::Instant::now();
                     let chat = gemini_client.new_chat(&new_message.content).await?;
-                    println!(
+                    debug!(
                         "{:#?}\n... in {:?}s",
                         chat.most_recent(),
                         timer.elapsed().as_secs()
