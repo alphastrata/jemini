@@ -7,6 +7,8 @@ Jemini is a Rust library that provides a simple and intuitive interface for inte
 
 It exists because I couldn't help but notice that there's no Rust option in their docs... shame on you Google.
 
+Note: This API's subject and models from the phind:codellama family are co-authors.
+
 ## Goals:
 
 - Easy-to-use API client for Google Gemini services.

@@ -10,8 +10,10 @@ THIS IS A WIP! (But the simplest functionality there)
 
 A, _hopefully_ Rusty wrapper for the Gemini REST API: https://ai.google.dev/tutorials/rest_quickstart?hl=en
 
+Note: This API's subject and models from the phind:codellama family are co-authors.
+
 """
-authors = ["jer, <alphastrata@gmail.com>"]
+authors = ["jer, <alphastrata@gmail.com>", "Gemini itself", "phind:codellama"]
 
 
 [[example]]
