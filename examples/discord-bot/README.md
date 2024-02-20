@@ -2,6 +2,8 @@
 
 This is a Discord bot example that uses the [Poise crate](https://docs.rs/poise) for command handling and the [Jemini API](https://github.com/jemini/jemini) for chat generation.
 
+![example-img](../../assets/dc-bot-example.png)
+
 ## Prerequisites
 
 - A Discord bot account with a token from Discord.
