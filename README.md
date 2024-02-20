@@ -9,7 +9,11 @@ Jemini is a Rust library that provides a simple and intuitive interface for inte
 
 It exists because I couldn't help but notice that there's no Rust option in their docs... shame on you Google.
 
+And, there are the results for the mandatory [`crates.io` search](https://crates.io/search?q=gemini).
+
 Note: This API's subject and models from the phind:codellama family are co-authors.
+
+It is by no means exhaustive, and is most definitely a WIP, however the included examples should show you how useful/not-useful it would be to your use case.
 
 ## Goals:
 
@@ -41,7 +45,8 @@ async fn main() -> Result<(), GeminiError> {
     let client = JeminiClient::new()?;
     let response: GeminiResponse = client.text_only("What is the meaning of life?").await?;
 
-    println!("{:#?}", response);
+    dbg!(&response);
+    println!("{}", response.most_recent().unwrap());
 
     Ok(())
 
@@ -65,3 +70,7 @@ Contributions to Jemini are welcome! Please feel free to open an issue or submit
 ## License
 
 Jemini is licensed under the MIT License.
+
+
+## Resources like this:
+https://crates.io/crates/google-generative-ai-rs by https://crates.io/users/avastmick
