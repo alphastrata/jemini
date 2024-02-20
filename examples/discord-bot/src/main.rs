@@ -43,6 +43,7 @@ async fn clear(ctx: Context<'_>) -> Result<(), Error> {
 
     Ok(())
 }
+
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     pretty_env_logger::init();
