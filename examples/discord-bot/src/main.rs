@@ -1,6 +1,6 @@
 use image::ImageFormat;
 use jemini::{Chat, ImageData, JeminiClient as GeminiClient};
-use log::{debug, error, info};
+use log::{debug, error};
 use poise::serenity_prelude::{self as serenity, UserId};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::{collections::HashMap, env, path::PathBuf, sync::Arc};
@@ -145,7 +145,7 @@ async fn event_handler<'c>(
                                 _ = new_message
                                     .reply(
                                         ctx,
-                                        response.most_recent().unwrap_or_else(|| {
+                                        response.most_recent().unwrap_or({
                                             "Error receiving a response from Gemini"
                                         }),
                                     )
@@ -168,7 +168,7 @@ async fn event_handler<'c>(
                     // Remove the @mention
                     let (_, mention_stripped) = &new_message
                         .content
-                        .split_once("@")
+                        .split_once('@')
                         .to_owned()
                         .unwrap_or_default();
                     let chat = gemini_client.new_chat(mention_stripped).await?;
