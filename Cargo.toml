@@ -15,7 +15,7 @@ Note: This API's subject and models from the phind:codellama family are co-autho
 """
 authors = ["jer, <alphastrata@gmail.com>", "Gemini itself", "phind:codellama"]
 readme = "./README.md"
-keywords = ["AI", "Google AI Studio", "Text Generation", "LLM"  ]
+keywords = ["AI", "Google-AI-Studio", "Text-Generation", "LLM"  ]
 repository = "https://github.com/alphastrata/jemini"
 
 
