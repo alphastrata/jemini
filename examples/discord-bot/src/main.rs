@@ -14,8 +14,11 @@ const BOT_ID: u64 = 1209058891556724746;
 
 struct Data {
     gemini_client: GeminiClient,
+
+    #[allow(dead_code)]
     chats: Arc<Mutex<HashMap<UserId, Chat>>>,
-} // User data, which is stored and accessible in all command invocations
+}
+
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'c> = poise::Context<'c, Data, Error>;
 
@@ -29,18 +32,6 @@ async fn activate_bot(ctx: Context<'_>) -> Result<(), Error> {
 async fn deactivate_bot(ctx: Context<'_>) -> Result<(), Error> {
     _ = ctx.reply("ciao!").await;
     ACTIVE.store(false, Ordering::SeqCst);
-    Ok(())
-}
-
-#[poise::command(slash_command, prefix_command)]
-async fn clear(ctx: Context<'_>) -> Result<(), Error> {
-    let u = ctx.author();
-
-    let data = ctx.data();
-    if data.chats.lock().await.remove(&u.id).is_some() {
-        _ = ctx.reply("Cleared!").await;
-    }
-
     Ok(())
 }
 
@@ -97,18 +88,26 @@ async fn event_handler<'c>(
         return Ok(());
     }
 
-    let gemini_client = &data.gemini_client;
-
     match event {
-        // serenity::FullEvent::Ready { data_about_bot, .. } => {
-        // debug!("Logged in as {:#?}", data_about_bot.user);
-        // }
+        serenity::FullEvent::Ready { data_about_bot, .. } => {
+            debug!("Logged in as {:#?}", data_about_bot.user);
+        }
         serenity::FullEvent::Message { new_message } => {
-            //
-
-            // TODO: Handle chat existing
+            //TODO: handle longer lived chats and their history.
+            // Check if chat exists for the user:
+            // let u = &new_message.author;
+            // let chats = data.chats.lock().await;
+            // if let Some(existing_chat) = chats.get_mut(&u.id) {
+            //     // If chat exists, append to it:
+            //     existing_chat.append(chat);
+            // } else {
+            //     // If chat does not exist, add a new one:
+            //     // chats.insert(u.id, chat);
+            // }
 
             if new_message.author.id != UserId::new(BOT_ID) {
+                let gemini_client = &data.gemini_client;
+
                 // Handle img:
                 if let Some(attachment) = new_message.attachments.first() {
                     if let Ok(content) = attachment.download().await {
@@ -136,6 +135,13 @@ async fn event_handler<'c>(
                                 .text_and_image(&new_message.content, image_data)
                                 .await
                             {
+                                let timer = std::time::Instant::now();
+                                debug!(
+                                    "{:#?}\n... in {:?}s",
+                                    response.most_recent(),
+                                    timer.elapsed().as_secs()
+                                );
+
                                 _ = new_message
                                     .reply(
                                         ctx,
@@ -159,27 +165,20 @@ async fn event_handler<'c>(
                     .any(|u| u.id == UserId::new(BOT_ID))
                 {
                     let timer = std::time::Instant::now();
-                    let chat = gemini_client.new_chat(&new_message.content).await?;
+                    // Remove the @mention
+                    let (_, mention_stripped) = &new_message
+                        .content
+                        .split_once("@")
+                        .to_owned()
+                        .unwrap_or_default();
+                    let chat = gemini_client.new_chat(mention_stripped).await?;
                     debug!(
                         "{:#?}\n... in {:?}s",
                         chat.most_recent(),
                         timer.elapsed().as_secs()
                     );
 
-                    // Check if chat exists for the user:
-                    let u = &new_message.author;
-                    let mut chats = data.chats.lock().await;
-
                     new_message.reply(ctx, chat.most_recent().unwrap()).await?;
-
-                    //TODO: handle longer lived chats and their history.
-                    if let Some(existing_chat) = chats.get_mut(&u.id) {
-                        // If chat exists, append to it:
-                        existing_chat.append(chat);
-                    } else {
-                        // If chat does not exist, add a new one:
-                        // chats.insert(u.id, chat);
-                    }
                 }
             }
         }

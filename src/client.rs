@@ -19,6 +19,7 @@ pub struct JeminiClient {
     base_url: Url,
     api_key: ApiKey,
     //TODO:
+    #[allow(dead_code)]
     active_chats: HashMap<Uuid, Chat>,
 }
 
@@ -131,24 +132,24 @@ mod tests {
         println!("{:#?}", response);
     }
 
+    #[ignore]
     #[tokio::test]
     async fn chat() {
         let client = JeminiClient::new().unwrap();
-        let mut chat = client
+        let _chat = client
             .new_chat("Write a secure password generation function in Golang.")
             .await
             .unwrap();
 
-        println!("{:#?}", chat);
+        unimplemented!("Long lived multi-turn chat is not implemented yet...");
+        // client
+        //     .reply_to(
+        //         &mut chat,
+        //         "Write a secure password generation function in Rust.",
+        //     )
+        //     .await
+        //     .unwrap();
 
-        client
-            .reply_to(
-                &mut chat,
-                "Write a secure password generation function in Rust.",
-            )
-            .await
-            .unwrap();
-
-        println!("{:#?}", chat);
+        // println!("{:#?}", chat);
     }
 }

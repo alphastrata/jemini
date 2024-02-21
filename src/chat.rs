@@ -44,7 +44,7 @@ impl Chat {
     pub fn most_recent(&self) -> &str {
         self.role_part_pairings
             .last()
-            .map(|(r, p)| p.text.as_str())
+            .map(|(_r, p)| p.text.as_str())
             .unwrap_or_else(|| "ERROR: No Message.")
     }
 }
